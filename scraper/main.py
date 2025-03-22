@@ -1,4 +1,4 @@
-from scraper.insert_data import insert_user
+from insert_data import insert_user
 
 
 def main():

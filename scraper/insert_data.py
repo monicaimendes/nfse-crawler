@@ -1,4 +1,4 @@
-from scraper.database import get_table
+from database import get_table
 
 
 def insert_user(user_id, password):
