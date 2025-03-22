@@ -4,9 +4,16 @@ from lxml.html import fromstring
 from lxml import etree
 from datetime import date
 from database import get_table_content
+import boto3
+
 
 session = Session()
 
+def send_sns_message(message):
+    sns_client = boto3.client("sns", region_name="us-east-2")
+    topic_arn = "arn:aws:sns:us-east-2:414301166999:nfse-notifications"
+
+    sns_client.publish(TopicArn=topic_arn, Message=message, Subject="Notificação de NFSE Nacional")
 
 class WebScraper:
     def __init__(self, user, password, host):
@@ -75,8 +82,7 @@ class WebScraper:
 
         except Exception as e:
             return {
-                "status": "exception",
-                "message": e,
+                "message": f"Houve um erro ao executar a busca de notas. Erro: {e}",
             }
 
 
@@ -88,4 +94,15 @@ if __name__ == "__main__":
             host="https://www.nfse.gov.br/EmissorNacional",
         )
 
-        print(instance.scrap())
+        result = instance.scrap()
+        if result.get("status") == "success":
+            message = ""
+            invoices = result.get("invoices")
+            if invoices:
+                message = f"Notas emitidas e recebidas hoje:\n\n"
+                for invoice in invoices:
+                    message += f"Nota {'emitida para' if invoice.get('type') == 'issued' else 'recebida de'} {invoice.get('company')}, no valor de {invoice.get('value')}.\n\n"
+            else:
+                message = "Nenhum nota emitida ou recebida hoje."
+
+        send_sns_message(message)
