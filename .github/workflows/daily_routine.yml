@@ -2,10 +2,10 @@ name: Run Daily Task
 
 on:
   schedule:
-    - cron: '52 17 * * *'
+    - cron: '40 18 * * *'
 
 jobs:
-  daily-job:
+  deploy:
     runs-on: ubuntu-latest
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
