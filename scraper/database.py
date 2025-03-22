@@ -1,4 +1,4 @@
-from scraper.config import get_dynamodb_resource
+from config import get_dynamodb_resource
 
 TABLE_NAME = "clients"
 
