@@ -6,15 +6,14 @@ from datetime import date
 from database import get_table_content
 import boto3
 
-session = Session()
 
+session = Session()
 
 def send_sns_message(message):
     sns_client = boto3.client("sns", region_name="us-east-2")
     topic_arn = "arn:aws:sns:us-east-2:414301166999:nfse-notifications"
 
     sns_client.publish(TopicArn=topic_arn, Message=message, Subject="Notificação de NFSE Nacional")
-
 
 class WebScraper:
     def __init__(self, user, password, host):
@@ -83,7 +82,6 @@ class WebScraper:
 
         except Exception as e:
             return {
-                "status": "exception",
                 "message": f"Houve um erro ao executar a busca de notas. Erro: {e}",
             }
 
