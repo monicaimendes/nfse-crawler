@@ -1,14 +1,27 @@
 from insert_data import insert_user
-
+from database import get_table_content
+from config import send_sns_message
 
 def main():
-    user_id = input("Digite o login: ")
-    user_id = [x for x in user_id if x in ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]]
-    user_id = int("".join(user_id))
-    password = input("Digite a senha: ")
+    for item in get_table_content()["Items"]:
+        instance = WebScraper(
+            user=item.get("id"),
+            password=item.get("password"),
+            host="https://www.nfse.gov.br/EmissorNacional",
+        )
 
-    response = insert_user(user_id, password)
-    print("Usuário inserido com sucesso!", response)
+        result = instance.scrap()
+        if result.get("status") == "success":
+            message = ""
+            invoices = result.get("invoices")
+            if invoices:
+                message = f"Notas emitidas e recebidas hoje:\n\n"
+                for invoice in invoices:
+                    message += f"Nota {'emitida para' if invoice.get('type') == 'issued' else 'recebida de'} {invoice.get('company')}, no valor de {invoice.get('value')}.\n\n"
+            else:
+                message = "Nenhum nota emitida ou recebida hoje."
+
+        send_sns_message(message)
 
 
 if __name__ == "__main__":

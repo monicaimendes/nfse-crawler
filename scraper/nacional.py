@@ -4,16 +4,10 @@ from lxml.html import fromstring
 from lxml import etree
 from datetime import date
 from database import get_table_content
-import boto3
 
 
 session = Session()
 
-def send_sns_message(message):
-    sns_client = boto3.client("sns", region_name="us-east-2")
-    topic_arn = "arn:aws:sns:us-east-2:414301166999:nfse-notifications"
-
-    sns_client.publish(TopicArn=topic_arn, Message=message, Subject="Notificação de NFSE Nacional")
 
 class WebScraper:
     def __init__(self, user, password, host):
@@ -42,8 +36,8 @@ class WebScraper:
         return {"status": "success"}
 
     def _extract_notes(self, category) -> list:
-        # today = date.today().strftime("%d/%m/%Y")
-        today = "02/02/2025"
+        today = date.today().strftime("%d/%m/%Y")
+        # today = "02/02/2025"
         result = []
 
         resp = session.get(f"{self._host}/Notas/{category}").text
@@ -105,4 +99,4 @@ if __name__ == "__main__":
             else:
                 message = "Nenhum nota emitida ou recebida hoje."
 
-        send_sns_message(message)
+        print(message)
