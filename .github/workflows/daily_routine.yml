@@ -2,7 +2,7 @@ name: Run Daily Task
 
 on:
   schedule:
-    - cron: '0 11 * * *'
+    - cron: '40 11 * * *'
 
 jobs:
   deploy:

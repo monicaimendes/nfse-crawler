@@ -1,5 +1,6 @@
 from database import get_table_content
 from config import send_sns_message
+from nacional import WebScraper
 
 
 def main():
