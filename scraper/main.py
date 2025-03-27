@@ -1,6 +1,6 @@
-from insert_data import insert_user
 from database import get_table_content
 from config import send_sns_message
+
 
 def main():
     for item in get_table_content()["Items"]:
